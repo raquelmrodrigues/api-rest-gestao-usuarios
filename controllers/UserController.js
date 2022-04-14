@@ -55,7 +55,9 @@ class UserController {
 
     async edit(req, res) {
         var {id, name, role, email} = req.body;
+        
         var result = await User.update(id, email, name, role);
+        
         if(result != undefined) {
             if(result.status) {
                 res.status(200);
@@ -69,6 +71,20 @@ class UserController {
             res.send("ocorreu um erro no servidor");
         }
         
+    }
+
+    async remove(req, res) {
+        var id = req.params.id;
+
+        var result = await User.delete(id);
+
+        if(result.status) { 
+            res.status(200);
+            res.send("tudo ok");
+        } else {
+            res.status(406);
+            res.send(result.err);
+        }
     }
 }
 
