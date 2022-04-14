@@ -13,9 +13,23 @@ class User {
         }
     }
 
-    async findById() {
+    async findById(id) {
         try {
             var result = await knex.select(["id", "email", "name", "role"]).where({id: id}).table("users");
+            if(result.length > 0) {
+                return result[0];
+            } else {
+                return undefined;
+            }
+        } catch(err) {
+            console.log(err);
+            return undefined;
+        }
+    }
+
+    async findByEmail(email) {
+        try {
+            var result = await knex.select(["id", "email", "name", "role"]).where({email: email}).table("users");
             if(result.length > 0) {
                 return result[0];
             } else {
@@ -88,7 +102,7 @@ class User {
     }
 
     async delete(id) {
-        var user = this.findById(id);
+        var user = await this.findById(id);
         if(user != undefined) {
             try {
                 await knex.delete().where({id: id}).table("users");
