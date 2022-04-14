@@ -1,3 +1,5 @@
+var User = require("../models/User");
+
 class UserController {
 
     async index(req, res){}
@@ -9,19 +11,24 @@ class UserController {
         if(email == undefined){
             res.status(400);
             res.json({err: "e-mail inválido"})
+            return;
         }
         if(password == undefined){
             res.status(400);
             res.json({err: "senha inválida"})
+            return;
         }
         if(name == undefined){
             res.status(400);
             res.json({err: "nome inválido"})
+            return;
         }
+
+        await User.new(email, password, name);
 
         res.status(200);
 
-        res.send("pegando o corpo da requisição");
+        res.send("tudo Ok");
     }
 }
 
