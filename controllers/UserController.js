@@ -1,5 +1,6 @@
 var User = require("../models/User");
 var PasswordToken = require("../models/PasswordToken");
+const { is } = require("express/lib/request");
 
 class UserController {
 
@@ -100,6 +101,22 @@ class UserController {
             res.status(406);
             res.send(result.err);
         }
+    }
+
+    async changePassword(req, res) {
+        var token = req.body.token;
+        var password = req.body.password;
+        var isValid = await PasswordToken.validate(token);
+
+        if(isTokenValid.status) {
+            await User.changePassword(password, isTokenValid.token.user_id, isTokenValid.token.token);
+            res.status(200);
+            res.send("senha alterada");
+        } else {
+            res.status(406);
+            res.send("token inválido");
+        }
+
     }
 }
 
