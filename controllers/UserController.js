@@ -1,6 +1,11 @@
 var User = require("../models/User");
 var PasswordToken = require("../models/PasswordToken");
 const { is } = require("express/lib/request");
+var jwt = require("jsonwebtoken");
+var bcrypt = require("bcrypt");
+
+
+var secret = "ausdhuiashdiuashdhadusiwk";
 
 class UserController {
 
@@ -117,6 +122,26 @@ class UserController {
             res.send("token inválido");
         }
 
+    }
+
+    async login(req, res) {
+        var {email, password} = req.body;
+
+        var user = await User.findByEmail(email);
+
+        if(user != undefined) {
+            var resultado = await bcrypt.compare(password, user.password);
+            if(resultado){
+                var token = jwt.sign({ email: user.email, role: user.role }, secret);
+                res.status(200);
+                res.json({token: token});
+            } else {
+                res.status(406);
+                res.send("Senha incorreta")
+            }
+        } else {
+            res.json({status: false});
+        }
     }
 }
 
